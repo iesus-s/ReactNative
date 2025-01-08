@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated'; 
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { useColorScheme } from './hooks/useColorScheme';
+import { useColorScheme as useRNColorScheme } from 'react-native';
 import { ThemedView } from './components/ThemedView';  
 import { ThemedText } from './components/ThemedText';  
 
@@ -16,9 +16,9 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const router = useRouter(); // Initialize router
-  const colorScheme = useColorScheme();
+  const colorScheme = useRNColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('./assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function RootLayout() {
         {/* Navigation Stack */}
         <ThemedView style={styles.content}>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="screens" options={{ headerShown: false }} />
+            <Stack.Screen name="screens/home" options={{ headerShown: false }} />
           </Stack>
         </ThemedView>
 
