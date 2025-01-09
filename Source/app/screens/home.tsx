@@ -107,8 +107,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
-  },
-  // New styles for button container
+  }, 
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',  
