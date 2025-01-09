@@ -1,15 +1,14 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router'; 
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated'; 
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import { Stack, useRouter } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
-import { useColorScheme as useRNColorScheme } from 'react-native';
-import { ThemedView } from './components/ThemedView';  
-import { ThemedText } from './components/ThemedText';  
+import { useColorScheme as useRNColorScheme } from "react-native";
+import { ThemedView } from "./components/ThemedView";
+import { ThemedText } from "./components/ThemedText";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,12 +17,20 @@ export default function RootLayout() {
   const router = useRouter(); // Initialize router
   const colorScheme = useRNColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('./assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
   });
+  const [showNavBar, setShowNavBar] = useState(false);
 
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+
+      // Delay showing the navigation bar
+      const timer = setTimeout(() => {
+        setShowNavBar(true);
+      }, 2000); // Delay duration (2 seconds)
+
+      return () => clearTimeout(timer); // Clean up the timer
     }
   }, [loaded]);
 
@@ -32,7 +39,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <ThemedView style={styles.container}>
         {/* Navigation Stack */}
         <ThemedView style={styles.content}>
@@ -42,20 +49,22 @@ export default function RootLayout() {
         </ThemedView>
 
         {/* Bottom Navigation Bar */}
-        <ThemedView style={styles.navBar}>
-          <TouchableOpacity onPress={() => router.push('/screens/home')}>
-            <ThemedText>Home</ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/screens/game')}>
-            <ThemedText>Game</ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/screens/stats')}>
-            <ThemedText>Stats</ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/screens/options')}>
-            <ThemedText>Options</ThemedText>
-          </TouchableOpacity>
-        </ThemedView>
+        {showNavBar && ( // Only render the navigation bar after the delay
+          <ThemedView style={styles.navBar}>
+            <TouchableOpacity  style={styles.navItem} onPress={() => router.push("/screens/home")}>
+              <ThemedText>Home</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/game")}>
+              <ThemedText>Game</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/stats")}>
+              <ThemedText>Stats</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/options")}>
+              <ThemedText>Options</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        )}
 
         {/* Status Bar */}
         <StatusBar style="auto" />
@@ -72,14 +81,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 70, 
-    borderTopWidth: 1, 
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    height: 70,
+    borderTopWidth: 1,
   },
   navItem: {
     flex: 1,
-    alignItems: 'center',
-  }, 
+    alignItems: "center",
+  },
 });
