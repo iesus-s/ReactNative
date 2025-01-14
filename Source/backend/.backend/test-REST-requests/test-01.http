@@ -1,0 +1,42 @@
+#GET https://google.com
+
+GET http://localhost:3000/
+
+###
+
+GET http://localhost:3000/api/data
+
+
+###
+Get http://localhost:3000/status
+
+###
+POST http://localhost:3000/request/users
+content-type: application/json
+
+{
+  "name": "luis-test01",
+  "username": "luis_tester_01",
+  "role": "tester",
+  "creationDate": "Mon, 13 Jan 2025 23:55:17 GMT",
+  "activated": true
+}
+
+###
+GET http://localhost:3000/request/users
+
+### 
+GET http://localhost:3000/request/users/6785a7d997c34bd5f5f1109d
+
+###
+PUT http://localhost:3000/request/users/6785a7d997c34bd5f5f1109d
+content-type: application/json
+
+{
+  "name": "luis-admin",
+  "username": "luis_admin_01",
+  "role": "admin"
+}
+
+### 
+DELETE http://localhost:3000/request/users/6785a7d997c34bd5f5f1109d
