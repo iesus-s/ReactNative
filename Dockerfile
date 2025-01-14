@@ -5,7 +5,7 @@ FROM node:18-bullseye
 WORKDIR /app
 
 # Copy only package.json and package-lock.json first for efficient caching
-COPY package.json package-lock.json ./
+COPY /app/package.json /app/package-lock.json /app/
 
 # Install dependencies
 RUN npm install
