@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 import { ThemedText } from './components/ThemedText';
@@ -18,7 +18,7 @@ export default function LoadScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title">Golfbud</ThemedText>
+      <ThemedText type="app" >Golfbud</ThemedText>
     </ThemedView>
   );
 }
