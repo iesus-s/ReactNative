@@ -1,0 +1,49 @@
+
+services:
+# API server
+  express-api:
+    image: docker.io/library/node:latest
+    build:
+      #context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .backend:/app
+      - /app/node_modules
+    command: ["npm", "start"]
+    depends_on:
+      - mongodb # Ensure MongoDB starts before Express
+    environment:
+      MONGO_URI: mongodb://root:{26)nY2kH<Yv`lmB`A"M@mongodb:27017/
+# DB server
+  mongodb:
+    image: docker.io/library/mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: '{26)nY2kH<Yv`lmB`A"M'
+          MONGO_INITDB_DATABASE: appdatabase
+# DB management server
+  mongo-express:
+    image: docker.io/library/mongo-express:latest
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: '{26)nY2kH<Yv`lmB`A"M'
+      ME_CONFIG_MONGODB_URL: mongodb://root:{26)nY2kH<Yv`lmB`A"M@mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+# # Ansible server
+#   ansible-node:
+#     image: 
+#     restart: always
+    
+# Dockerfile
+# This Dockerfile should be placed in the same directory as the docker-compose.yml
+volumes:
+  mongodb_data:

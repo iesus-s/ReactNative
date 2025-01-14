@@ -1,0 +1,7 @@
+{
+    "name": "string",
+    "username": "string",
+    "role": "string",
+    "creationDate": "date",
+    "activated": "boolean"
+}
