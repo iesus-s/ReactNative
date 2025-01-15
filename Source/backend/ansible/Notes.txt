@@ -1,3 +1,0 @@
-Possible ansible playbooks
-- Create api service accounts on mongodb server
-- Create initial db and dumby data on mongodb server 
