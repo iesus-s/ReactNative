@@ -4,13 +4,13 @@ import { useRouter } from "expo-router";
 import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText'; 
 
-export default function StatsScreen() {
+export default function ProfileScreen() {
   const router = useRouter();
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
-        <ThemedText type="title">Stats Screen</ThemedText> 
+        <ThemedText type="title">Profile Screen</ThemedText> 
       </ThemedView>
     </ScrollView>
   );

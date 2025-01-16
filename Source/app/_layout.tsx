@@ -52,16 +52,16 @@ export default function RootLayout() {
         {showNavBar && ( // Only render the navigation bar after the delay
           <ThemedView style={styles.navBar}>
             <TouchableOpacity  style={styles.navItem} onPress={() => router.push("/screens/home")}>
-              <ThemedText>Home</ThemedText>
+              <ThemedText type="nav">Home</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/game")}>
-              <ThemedText>Game</ThemedText>
+              <ThemedText type="nav">Game</ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/stats")}>
-              <ThemedText>Stats</ThemedText>
+            <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/profile")}>
+              <ThemedText type="nav">Profile</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/options")}>
-              <ThemedText>Options</ThemedText>
+              <ThemedText type="nav">Options</ThemedText>
             </TouchableOpacity>
           </ThemedView>
         )}

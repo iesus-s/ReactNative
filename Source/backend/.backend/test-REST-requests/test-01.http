@@ -1,17 +1,17 @@
 #GET https://google.com
 
-GET http://localhost:3000/
+GET http://192.168.5.14:3000/
 
 ###
 
-GET http://localhost:3000/api/data
+GET http://192.168.5.14:3000/api/data
 
 
 ###
-Get http://localhost:3000/status
+Get http://192.168.5.14:3000/status
 
 ###
-POST http://localhost:3000/request/users
+POST http://192.168.5.14:3000/request/users
 content-type: application/json
 
 {
@@ -23,13 +23,13 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3000/request/users
+GET http://192.168.5.14:3000/request/users
 
 ### 
-GET http://localhost:3000/request/users/6785a7d997c34bd5f5f1109d
+GET http://192.168.5.14:3000/request/users/6785a7d997c34bd5f5f1109d
 
 ###
-PUT http://localhost:3000/request/users/6785a7d997c34bd5f5f1109d
+PUT http://192.168.5.14:3000/request/users/6785a7d997c34bd5f5f1109d
 content-type: application/json
 
 {
@@ -39,4 +39,4 @@ content-type: application/json
 }
 
 ### 
-DELETE http://localhost:3000/request/users/6785a7d997c34bd5f5f1109d
+DELETE http://192.168.5.14:3000/request/users/6785a7d997c34bd5f5f1109d

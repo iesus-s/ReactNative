@@ -44,7 +44,7 @@ export default function HomeScreen() {
                 onRequestClose={toggleModal}>
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
-              <ThemedText type="title" style={styles.modalTitle}>Sign In</ThemedText>
+              <ThemedText type="request" style={styles.modalTitle}>Sign In</ThemedText>
               <ThemedTextInput placeholder="Email" value={email}
                 onChangeText={setEmail} />
               <ThemedTextInput placeholder="Password" value={password}
@@ -62,7 +62,7 @@ export default function HomeScreen() {
                 onRequestClose={toggleModal}>
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
-              <ThemedText type="title" style={styles.modalTitle}>Create Account</ThemedText>
+              <ThemedText type="request" style={styles.modalTitle}>Create Account</ThemedText>
               <ThemedTextInput placeholder="Email" value={email}
                 onChangeText={setEmail} />
               <ThemedTextInput placeholder="Password" value={password}
@@ -86,8 +86,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    alignItems: 'center',
-    paddingTop: 100, 
+    alignItems: 'center', 
   },
   buttonsContainer: { 
     marginTop: 400,
