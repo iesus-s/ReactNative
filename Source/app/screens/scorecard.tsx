@@ -24,7 +24,7 @@ export default function ScorecardScreen() {
     console.log('facility:', facility);
   };
 
-  const [teamMembers, setTeamMembers] = useState(['Alice', 'Bob', 'Charlie', 'Dana']);
+  const [teamMembers, setTeamMembers] = useState(['Jim']);
   const [newMember, setNewMember] = useState('');
 
   const addMember = () => {
@@ -82,7 +82,7 @@ export default function ScorecardScreen() {
             <ThemedView key={index} style={styles.memberContainer}>
               <ThemedText type="body" style={styles.teamber}>{member}</ThemedText>
               <TouchableOpacity style={styles.removeButton} onPress={() => removeMember(index)}>
-                <ThemedText type="body">Remove</ThemedText>
+                <ThemedText type="body" style={styles.remove}>Remove</ThemedText>
               </TouchableOpacity>
             </ThemedView>
           ))}
@@ -93,11 +93,12 @@ export default function ScorecardScreen() {
             placeholder="Add new member"
             value={newMember}
             onChangeText={setNewMember}
-          />
-          <ThemedButton onPress={addMember} title="Add" />
+          /> 
+          <ThemedButton style={styles.buttonContainer} onPress={addMember} title="Add" />
         </ThemedView>
 
         <ThemedButton onPress={router.back} style={styles.goBack} title="Go Back" />
+        <ThemedButton onPress={() => router.push("/screens/session")} style={styles.goSubmit} title="Submit" />
       </ThemedView>
     </ScrollView>
   );
@@ -105,15 +106,21 @@ export default function ScorecardScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    flex: 1, 
+    alignItems: 'center', 
+    paddingBottom: 70,
   },
   goBack: {
     position: 'absolute',
     bottom: 10,
     left: 10,
+    marginTop: 50,
+  },
+  goSubmit: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    marginTop: 50,
   },
   gameTitles: {
     width: 300,
@@ -146,32 +153,39 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   teamber: {
-    marginRight: 10,
+    marginRight: 10, 
   },
-  listContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    width: 400,
-    height: 100,
+  listContainer: { 
+    flexWrap: 'wrap', 
     marginTop: 20,
     marginBottom: 20,
-    fontSize: 18,
+    fontSize: 18,   
   },
   memberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'row',  
+    justifyContent: 'space-between',  
     alignItems: 'center', 
-    borderBottomColor: '#ccc',
-    margin: 10, 
+    borderBottomColor: '#ccc',  
+    marginBottom: 10, 
+    width: '100%', 
+    paddingLeft: 50,
+    paddingRight: 50,
   },
   addMemberContainer: { 
     alignItems: 'center',  
     marginTop: 10, 
   },
   removeButton: {
-    backgroundColor: '#ff5c5c',
+    backgroundColor: 'red',
     borderRadius: 5,
-    padding: 5,
-  },   
+    padding: 5, 
+    justifyContent: 'center',  
+    alignItems: 'center',
+  }, 
+  remove: {
+    textAlign: 'center', 
+  },    
+  buttonContainer: { 
+    marginBottom: 20,   
+  },
 });

@@ -24,8 +24,7 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    paddingTop: 100, 
+    alignItems: 'center', 
   },
   buttonsContainer: { 
     marginTop: 400,
