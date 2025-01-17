@@ -13,6 +13,7 @@ export default function OptionsScreen() {
   const router = useRouter();
 
   return (
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Options Screen</ThemedText> 

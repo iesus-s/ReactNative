@@ -5,7 +5,7 @@ import { useThemeColor } from '../hooks/useThemeColor';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'body' | 'app' | 'request' | 'nav';
+  type?: 'default' | 'title' | 'body' | 'app' | 'request' | 'nav' | 'profile';
 };
 
 export function ThemedText({
@@ -21,11 +21,12 @@ export function ThemedText({
     <Text
       style={[
         { color }, 
-        type === 'app' ? styles.app : undefined, 
-        type === 'title' ? styles.title : undefined,
-        type === 'body' ? styles.body : undefined,
-        type === 'request' ? styles.request : undefined,
-        type === 'nav' ? styles.nav : undefined,
+        type === 'app' ? styles.app : undefined,        // For App Title
+        type === 'title' ? styles.title : undefined,    // For Page Titles
+        type === 'body' ? styles.body : undefined,      // For Scorecard Body Titles
+        type === 'request' ? styles.request : undefined,// For Sign and Create Account Titles
+        type === 'nav' ? styles.nav : undefined,        // For Nav Items 
+        type === 'profile' ? styles.profile : undefined,// For Profite Titles
         style,
       ]}
       {...rest}
@@ -61,13 +62,19 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     paddingTop: 80,
     paddingBottom: 40, 
+    textAlign: 'center',
   },
   body: {
     fontSize: 16,  
-    fontWeight: 'normal',
+    fontWeight: 'bold',
     lineHeight: 24, 
     marginTop: 10,   
   }, 
+  profile: { 
+    fontSize: 32,  
+    fontWeight: 'bold',
+    textAlign: 'left',
+  },
 });
 
 export default ThemedText;

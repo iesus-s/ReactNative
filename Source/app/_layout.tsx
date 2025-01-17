@@ -38,7 +38,8 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
+  return ( 
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <ThemedView style={styles.container}>
         {/* Navigation Stack */}
@@ -59,6 +60,9 @@ export default function RootLayout() {
             </TouchableOpacity>
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/profile")}>
               <ThemedText type="nav">Profile</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/bets")}>
+              <ThemedText type="nav">Bets</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.navItem} onPress={() => router.push("/screens/options")}>
               <ThemedText type="nav">Options</ThemedText>
