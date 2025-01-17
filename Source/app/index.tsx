@@ -16,7 +16,7 @@ export default function LoadScreen() {
     return () => clearTimeout(timer); // Clean up the timer
   }, [router]);
 
-  return (
+  return ( 
     <ThemedView style={styles.container}>
       <ThemedText type="app" >Golfbud</ThemedText>
     </ThemedView>

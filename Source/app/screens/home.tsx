@@ -31,6 +31,7 @@ export default function HomeScreen() {
     toggleCreateModal();
   }; 
   return (
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Home Screen</ThemedText>  

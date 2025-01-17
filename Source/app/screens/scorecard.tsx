@@ -24,7 +24,7 @@ export default function ScorecardScreen() {
     console.log('facility:', facility);
   };
 
-  const [teamMembers, setTeamMembers] = useState(['Jim']);
+  const [teamMembers, setTeamMembers] = useState(['A', 'B', 'C']);
   const [newMember, setNewMember] = useState('');
 
   const addMember = () => {
@@ -39,6 +39,7 @@ export default function ScorecardScreen() {
   };
 
   return (
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Scorecard Screen</ThemedText>

@@ -9,6 +9,7 @@ export default function RecordsScreen() {
   const router = useRouter();
 
   return (
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Records Screen</ThemedText>

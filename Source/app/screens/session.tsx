@@ -1,25 +1,25 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, TextInputProps } from 'react-native';
+import { StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useRouter } from "expo-router";
 import { ThemedView } from '../components/ThemedView';
-import { ThemedText } from '../components/ThemedText';
-import ThemedTextInput from '../components/ThemedTextInput';  
+import { ThemedText } from '../components/ThemedText'; 
+import { ThemedButton } from '../components/ThemedButton';
 
 export default function ProfileScreen() {
   const router = useRouter(); 
 
   const renderGrid = () => {
+    /////////////////////////// CHANGE TO TAKE ROW ,COLUMN AND NAMES FROM SCORECARD.TSX ///////////////////////////
     const rows = 16;
     const columns = 4;
-    const columnNames = ["Name 1", "Name 2", "Name 3", "Name 4"];
+    const columnNames = ["A", "B", "C", "D"];
     const grid = [];
 
     // Header row
     const headerRow = (
-      <ThemedView key="header" style={styles.row}>
-        <ThemedText style={styles.rowLabel}></ThemedText> {/* Empty cell for alignment */}
-        {columnNames.map((name, index) => (
-          <ThemedText key={index} style={styles.columnHeader}>{name}</ThemedText>
+      <ThemedView key="header" style={styles.names}>
+        {columnNames.map((name, index) => ( 
+            <ThemedText key={index} style={styles.columnHeader}>{name}</ThemedText> 
         ))}
       </ThemedView>
     );
@@ -30,13 +30,14 @@ export default function ProfileScreen() {
       const row = [];
       for (let j = 0; j < columns; j++) { 
         row.push(
-          <ThemedTextInput 
+          <TextInput 
             key={`${i}-${j}`} 
             id={`${i}-${j}`} 
             style={styles.input} 
           />
         );
       }
+      // Input columns
       grid.push(
         <ThemedView key={i} style={styles.row}>
           <ThemedText style={styles.rowLabel}>{i + 1}</ThemedText>
@@ -48,12 +49,14 @@ export default function ProfileScreen() {
   };
 
   return (
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Session Screen</ThemedText>
         <ThemedView style={styles.gridContainer}>
           {renderGrid()}
         </ThemedView>
+        <ThemedButton onPress={() => router.push("/screens/game")} style={styles.goBack} title="Go Back" />
       </ThemedView>
     </ScrollView>
   );
@@ -64,31 +67,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: 16, 
+    paddingBottom: 70,
   },
   gridContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center', 
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center', 
-    paddingLeft: 20,
-    paddingRight: 50,
+    paddingLeft: 30,
+    paddingRight: 50, 
+  }, 
+  names: { 
+    flexDirection: 'row',  
+    alignItems: 'center',  
+    paddingLeft: 17,
+  },
+  columnHeader: { 
+    margin: 4, 
+    fontWeight: 'bold',
+    fontSize: 20,
+    paddingLeft: 23,
+    paddingRight: 23,
+
   },
   rowLabel: {
     marginRight: 8,
-    fontSize: 16,
-    width: 30,
-  },
-  columnHeader: {
-    flex: 1,
-    margin: 4,
-    padding: 8,
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
+    fontSize: 24,
+    width: 30, 
+    textAlign: 'right',
   },
   input: {
     flex: 1,
@@ -96,7 +106,17 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     width: 60,
+    height: 60,
     borderColor: '#ccc',
     borderRadius: 8,
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 32,
+  },
+  goBack: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    marginTop: 50,
   },
 });
