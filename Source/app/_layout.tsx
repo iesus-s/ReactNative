@@ -4,7 +4,7 @@ import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native"; 
 
 import { useColorScheme as useRNColorScheme } from "react-native";
 import { ThemedView } from "./components/ThemedView";
@@ -40,12 +40,13 @@ export default function RootLayout() {
 
   return ( 
     // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}> 
       <ThemedView style={styles.container}>
         {/* Navigation Stack */}
         <ThemedView style={styles.content}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="screens/home" options={{ headerShown: false }} />
+            <Stack.Screen name="screens/profile" options={{ headerShown: false }} />
           </Stack>
         </ThemedView>
 
@@ -72,7 +73,7 @@ export default function RootLayout() {
 
         {/* Status Bar */}
         <StatusBar style="auto" />
-      </ThemedView>
+      </ThemedView> 
     </ThemeProvider>
   );
 }

@@ -26,10 +26,8 @@ export default function ProfileScreen() {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
           Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.
         </ThemedText>
-        <ThemedView style={styles.divider}/>
-        <ThemedView style={styles.pageTitle}>
-          <ThemedText type="profile">Friends</ThemedText>
-        </ThemedView>
+        <ThemedView style={styles.divider}/> 
+          <ThemedText type="profile">Friends</ThemedText> 
       </ThemedView>
     </ScrollView>
   );
@@ -73,7 +71,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     width: '100%',
     marginVertical: 20,
-  }, 
-  pageTitle: {  
-  },
+  },  
 });
