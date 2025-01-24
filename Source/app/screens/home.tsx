@@ -3,33 +3,66 @@ import { StyleSheet, Modal, ScrollView } from 'react-native';
 import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedButton } from '../components/ThemedButton';
-import { ThemedTextInput } from '../components/ThemedTextInput';  
+import { ThemedTextInput } from '../components/ThemedTextInput';   
 
 export default function HomeScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
+  const [user_name, setUser] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [retypePassword, setRetypePassword] = useState('');  
+  const [retypePassword, setRetypePassword] = useState('');
+  const [isMessageModalVisible, setMessageModalVisible] = useState(false);
+  const [message, setMessage] = useState('');   
 
   const toggleModal = () => setModalVisible(!isModalVisible);
   const toggleCreateModal = () => setCreateModalVisible(!isCreateModalVisible);
-
+  const toggleMessageModal = () => setMessageModalVisible(!isMessageModalVisible);
 
   const handleSignIn = () => {
-    // Sign-in logic here (MISSING)
+    // Sign-in logic here
     console.log('Email:', email);
     console.log('Password:', password); 
     toggleModal();
   };
 
-  const handleCreateAccount = () => {
-    // Sign-in logic here (MISSING)
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Re-type Password:', retypePassword);
-    toggleCreateModal();
-  }; 
+  // Create Account Logic
+  const handleCreateAccount = async () => {
+    if (password !== retypePassword) {
+      setMessage('Passwords do not match');
+      toggleMessageModal();
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://192.168.1.241:8080/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_name,
+          email,
+          password,
+          retypePassword,
+        }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('New User Created!'); // Success message
+        toggleCreateModal(); // Close the create account modal
+      } else {
+        setMessage(data.message); // Error message
+      }
+      toggleMessageModal(); // Show the message modal
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage('Failed to create account. Please try again later.');
+      toggleMessageModal(); // Show the message modal
+    }
+  };
+
   return (
     // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -40,7 +73,7 @@ export default function HomeScreen() {
           <ThemedButton onPress={toggleCreateModal} title="Create Account" /> 
         </ThemedView>
 
-        {/* Modals */}
+        {/* Sign In Modal */}
         <Modal visible={isModalVisible} transparent animationType="fade" 
                 onRequestClose={toggleModal}>
           <ThemedView style={styles.modalOverlay}>
@@ -59,22 +92,39 @@ export default function HomeScreen() {
             </ThemedView>
           </ThemedView>
         </Modal> 
+
+        {/* Create Account Modal */}
         <Modal visible={isCreateModalVisible} transparent animationType="fade" 
-                onRequestClose={toggleModal}>
+                onRequestClose={toggleCreateModal}>
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
               <ThemedText type="request" style={styles.modalTitle}>Create Account</ThemedText>
+              <ThemedTextInput placeholder="User" value={user_name}
+                onChangeText={setUser} />
               <ThemedTextInput placeholder="Email" value={email}
                 onChangeText={setEmail} />
               <ThemedTextInput placeholder="Password" value={password}
                 onChangeText={setPassword} secureTextEntry/>
-                <ThemedTextInput placeholder="Re-type Password" value={retypePassword}
+              <ThemedTextInput placeholder="Re-type Password" value={retypePassword}
                 onChangeText={setRetypePassword} secureTextEntry/>
               
               {/* Container for buttons to center them */}
               <ThemedView style={styles.buttonContainer}>
-                <ThemedButton onPress={handleCreateAccount } title="Submit" />
+                <ThemedButton onPress={handleCreateAccount} title="Submit" />
                 <ThemedButton onPress={toggleCreateModal} title="Cancel" />
+              </ThemedView>
+            </ThemedView>
+          </ThemedView>
+        </Modal> 
+
+        {/* Message Modal */}
+        <Modal visible={isMessageModalVisible} transparent animationType="fade" 
+                onRequestClose={toggleMessageModal}>
+          <ThemedView style={styles.modalOverlay}>
+            <ThemedView style={styles.modalContainer}>
+              <ThemedText type="request" style={styles.modalTitle}>{message}</ThemedText>
+              <ThemedView style={styles.buttonContainer}>
+                <ThemedButton onPress={toggleMessageModal} title="Ok" />
               </ThemedView>
             </ThemedView>
           </ThemedView>
@@ -103,7 +153,7 @@ const styles = StyleSheet.create({
     width: 400,
     padding: 20,
     borderRadius: 10, 
-    shadowRadius: 4,
+    boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.8)',
     elevation: 5,
   },
   modalTitle: {
