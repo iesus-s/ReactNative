@@ -20,11 +20,15 @@ export default function ScorecardScreen() {
   };
   // Needs handleGame logic
   const handleGame = () => {
+    if (!gameDate.trim() || !facility.trim() || !selected) {
+      Alert.alert("Missing Fields", "Please fill in all required fields before submitting.");
+      return;
+    }
     console.log('gameDate', gameDate);
-    console.log('facility:', facility);
+    console.log('facility', facility); 
   };
 
-  const [teamMembers, setTeamMembers] = useState(['A', 'B', 'C']);
+  const [teamMembers, setTeamMembers] = useState(['Current User']);
   const [newMember, setNewMember] = useState('');
 
   const addMember = () => {
@@ -99,7 +103,18 @@ export default function ScorecardScreen() {
         </ThemedView>
 
         <ThemedButton onPress={router.back} style={styles.goBack} title="Go Back" />
-        <ThemedButton onPress={() => router.push("/screens/session")} style={styles.goSubmit} title="Submit" />
+        <ThemedButton onPress={() => {
+            router.push({
+              pathname: "/screens/session",
+              params: {
+                gameDate,
+                facility,
+                selected,
+                teamMembers: JSON.stringify(teamMembers),
+              },
+            });
+          }}
+          style={styles.goSubmit} title="Submit" />
       </ThemedView>
     </ScrollView>
   );
@@ -181,9 +196,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5, 
     justifyContent: 'center',  
-    alignItems: 'center',
+    alignItems: 'center', 
   }, 
-  remove: {
+  remove: { 
     textAlign: 'center', 
   },    
   buttonContainer: { 

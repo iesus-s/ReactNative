@@ -1,5 +1,6 @@
 # dependencies
 node_modules/ 
+expo-env.d.ts
 
 # backend
 Backend/ 

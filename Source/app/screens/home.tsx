@@ -8,8 +8,10 @@ import { ThemedTextInput } from '../components/ThemedTextInput';
 export default function HomeScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
-  const [user_name, setUser] = useState('');
+  const [fullName, setFullName]= useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUser] = useState(''); 
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [isMessageModalVisible, setMessageModalVisible] = useState(false);
@@ -19,32 +21,53 @@ export default function HomeScreen() {
   const toggleCreateModal = () => setCreateModalVisible(!isCreateModalVisible);
   const toggleMessageModal = () => setMessageModalVisible(!isMessageModalVisible);
 
-  const handleSignIn = () => {
-    // Sign-in logic here
-    console.log('Email:', email);
-    console.log('Password:', password); 
-    toggleModal();
+  const handleSignIn = async () => {
+    try {
+      const response = await fetch('http://192.168.5.14:3000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          username, 
+          password
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('Signed In!'); // Success message
+      } else {
+        setMessage(data.message); // Error message
+      }
+      toggleMessageModal(); // Show the message modal
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage('Failed to sign in. Please try again later.');
+      toggleMessageModal(); // Show the message modal
+    }
   };
 
   // Create Account Logic
   const handleCreateAccount = async () => {
     if (password !== retypePassword) {
-      setMessage('Passwords do not match');
+      setMessage('Passwords Do Not Match');
       toggleMessageModal();
       return;
     }
   
     try {
-      const response = await fetch('http://192.168.1.241:8080/api/users', {
+      const response = await fetch('http://192.168.5.14:3000/api/request/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_name,
+          fullName,
+          phoneNumber, 
+          username,
           email,
-          password,
-          retypePassword,
+          password
         }),
       });
   
@@ -79,8 +102,8 @@ export default function HomeScreen() {
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
               <ThemedText type="request" style={styles.modalTitle}>Sign In</ThemedText>
-              <ThemedTextInput placeholder="Email" value={email}
-                onChangeText={setEmail} />
+              <ThemedTextInput placeholder="Username" value={username}
+                onChangeText={setUser} />
               <ThemedTextInput placeholder="Password" value={password}
                 onChangeText={setPassword} secureTextEntry/>
               
@@ -99,10 +122,14 @@ export default function HomeScreen() {
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
               <ThemedText type="request" style={styles.modalTitle}>Create Account</ThemedText>
-              <ThemedTextInput placeholder="User" value={user_name}
+              <ThemedTextInput placeholder="Full Name" value={fullName}
+                onChangeText={setFullName} />
+              <ThemedTextInput placeholder="Username" value={username}
                 onChangeText={setUser} />
               <ThemedTextInput placeholder="Email" value={email}
                 onChangeText={setEmail} />
+                <ThemedTextInput placeholder="Phone" value={phoneNumber}
+                onChangeText={setPhoneNumber} />
               <ThemedTextInput placeholder="Password" value={password}
                 onChangeText={setPassword} secureTextEntry/>
               <ThemedTextInput placeholder="Re-type Password" value={retypePassword}
