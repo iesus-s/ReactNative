@@ -2,16 +2,22 @@
 FROM node:18-bullseye
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /Source
 
-# Copy only package.json and package-lock.json first for efficient caching
-COPY ./Source/ .
+# Copy package.json and package-lock.json first for efficient caching
+COPY ./Source/package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install -y
+
+# Copy the rest of the app files
+COPY ./Source/ /Source/
+
+# Set the working directory to the app folder
+WORKDIR /Source
 
 # Expose Metro Bundler port
 EXPOSE 8081
 
-# Command to start the Metro Bundler
+# Start the Metro Bundler inside /Source/app
 CMD ["npx", "expo", "start", "--tunnel"]
