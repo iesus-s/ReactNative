@@ -5,13 +5,10 @@ FROM node:18-bullseye
 WORKDIR /app
 
 # Copy only package.json and package-lock.json first for efficient caching
-COPY /app/package.json /app/package-lock.json /app/
+COPY ./Source/ .
 
 # Install dependencies
 RUN npm install
-
-# Copy all other project files except those in .dockerignore
-COPY . .
 
 # Expose Metro Bundler port
 EXPOSE 8081
