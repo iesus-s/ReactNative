@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, Modal, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedButton } from '../components/ThemedButton';
-import { ThemedTextInput } from '../components/ThemedTextInput';   
+import { ThemedTextInput } from '../components/ThemedTextInput';    
 
 export default function HomeScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -25,26 +26,23 @@ export default function HomeScreen() {
     try {
       const response = await fetch('http://192.168.5.14:3000/api/login/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          username, 
-          password
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
-        setMessage('Signed In!'); // Success message
+        await AsyncStorage.setItem('authToken', data.token); // Save token
+        toggleModal();
+        setMessage('Signed In!');
       } else {
-        setMessage(data.message); // Error message
+        setMessage(data.message);
       }
-      toggleMessageModal(); // Show the message modal
+      toggleMessageModal();
     } catch (error) {
       console.error('Error:', error);
       setMessage('Failed to sign in. Please try again later.');
-      toggleMessageModal(); // Show the message modal
+      toggleMessageModal();
     }
   };
 
