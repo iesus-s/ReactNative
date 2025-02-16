@@ -1,43 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useRouter } from "expo-router";
 import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText'; 
 import { ThemedButton } from '../components/ThemedButton';
+import { jwtDecode } from "jwt-decode";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CustomJwtPayload } from '../constants/jwtPayload';
 
 export default function ProfileScreen() {
   const router = useRouter(); 
+  const [scorecard, setScorecard] = useState<any>(null);
+  const [creatorID, setCreatorID] = useState<string | null>(null);
+  // Fetch the scorecard data
+  useEffect(() => {
+    const fetchScorecardData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          const decoded = jwtDecode<CustomJwtPayload>(token);
+          setCreatorID(decoded._id);
+        }
+      } catch (error) {
+        console.error("Error retrieving token:", error);
+      }
+    };
+
+    fetchScorecardData();
+    console.log("ID:", creatorID);
+  }, []);
+
+  useEffect(() => {
+    const fetchScorecard = async () => {
+      if (creatorID) {
+        try {
+          const response = await fetch(`http://localhost:3000/api/request/scorecards?creator=${creatorID}`);
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setScorecard(data[0]);  // Get the latest scorecard
+          } else {
+            console.error("No scorecard found for the given creator ID.");
+          }
+        } catch (error) {
+          console.error("Error fetching scorecard data:", error);
+        }
+      }
+    };
+
+    fetchScorecard();
+  }, [creatorID]);
 
   const renderGrid = () => {
-    /////////////////////////// CHANGE TO TAKE ROW ,COLUMN AND NAMES FROM SCORECARD.TSX ///////////////////////////
-    const rows = 16;
-    const columns = 4;
-    const columnNames = ["A", "B", "C", "D"];
+    if (!scorecard) return null;
+
+    const rows = scorecard.holeSelection || 9;  // Default to 16 if not found
+    const columns = scorecard.players.length || 1;  // Default to 4 if no players
+    const columnNames = scorecard.players || ["A", "B", "C", "D"];  // Use player names from scorecard
+
     const grid = [];
 
     // Header row
     const headerRow = (
       <ThemedView key="header" style={styles.names}>
-        {columnNames.map((name, index) => ( 
-            <ThemedText key={index} style={styles.columnHeader}>{name}</ThemedText> 
+        {columnNames.map((name: string, index: number) => ( 
+        <ThemedText key={index} style={styles.columnHeader}>{name}</ThemedText> 
         ))}
       </ThemedView>
     );
     grid.push(headerRow);
 
-    // Input rows
+    // Input rows based on holes
     for (let i = 0; i < rows; i++) {
       const row = [];
-      for (let j = 0; j < columns; j++) { 
+      for (let j = 0; j < columns; j++) {
         row.push(
           <TextInput 
             key={`${i}-${j}`} 
             id={`${i}-${j}`} 
             style={styles.input} 
+            value={scorecard.scores[columnNames[j]]?.[`hole${i + 1}`] || ''}  // Set value from scorecard
           />
         );
       }
-      // Input columns
+      // Row with hole number and inputs
       grid.push(
         <ThemedView key={i} style={styles.row}>
           <ThemedText style={styles.rowLabel}>{i + 1}</ThemedText>
@@ -49,7 +94,6 @@ export default function ProfileScreen() {
   };
 
   return (
-    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Session Screen</ThemedText>
@@ -92,7 +136,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingLeft: 23,
     paddingRight: 23,
-
   },
   rowLabel: {
     marginRight: 8,

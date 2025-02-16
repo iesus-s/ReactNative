@@ -23,8 +23,18 @@ export default function HomeScreen() {
   const toggleMessageModal = () => setMessageModalVisible(!isMessageModalVisible);
 
   const handleSignIn = async () => {
-    try {
-      const response = await fetch('http://192.168.5.14:3000/api/login/', {
+    if (!username) {
+      setMessage('Missing Username!');
+      toggleMessageModal();
+      return;
+    }
+    else if (!password) {
+      setMessage('Missing Password!');
+      toggleMessageModal();
+      return;
+    }
+    else try {
+      const response = await fetch('http://localhost:3000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -36,35 +46,54 @@ export default function HomeScreen() {
         toggleModal();
         setMessage('Signed In!');
       } else {
-        setMessage(data.message);
+        setMessage('Wrong Username or Password!');
       }
       toggleMessageModal();
-    } catch (error) {
-      console.error('Error:', error);
-      setMessage('Failed to sign in. Please try again later.');
+    } catch (error) {  
+      setMessage('Failed to Sign In. Please try again later.');
       toggleMessageModal();
     }
   };
 
   // Create Account Logic
   const handleCreateAccount = async () => {
-    if (password !== retypePassword) {
-      setMessage('Passwords Do Not Match');
+    if (!fullName) {
+      setMessage('Missing Full Name!');
+      toggleMessageModal();
+      return;
+    }
+    if (!username) {
+      setMessage('Missing Username!');
+      toggleMessageModal();
+      return;
+    }
+    if (!email) {
+      setMessage('Missing Email!');
+      toggleMessageModal();
+      return;
+    }
+    if (!password || !retypePassword) {
+      setMessage('Missing Password!');
+      toggleMessageModal();
+      return;
+    }
+    else if (password !== retypePassword) {
+      setMessage('Passwords Do Not Match!');
       toggleMessageModal();
       return;
     }
   
-    try {
-      const response = await fetch('http://192.168.5.14:3000/api/request/users', {
+    else try {
+      const response = await fetch('http://localhost:3000/api/request/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           fullName,
-          phoneNumber, 
-          username,
+          username, 
           email,
+          phoneNumber, 
           password
         }),
       });
@@ -77,10 +106,9 @@ export default function HomeScreen() {
         setMessage(data.message); // Error message
       }
       toggleMessageModal(); // Show the message modal
-    } catch (error) {
-      console.error('Error:', error);
-      setMessage('Failed to create account. Please try again later.');
-      toggleMessageModal(); // Show the message modal
+    } catch (error) {  
+      setMessage('Failed to Create Account. Please try again later.');
+      toggleMessageModal();
     }
   };
 
@@ -120,18 +148,25 @@ export default function HomeScreen() {
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
               <ThemedText type="request" style={styles.modalTitle}>Create Account</ThemedText>
-              <ThemedTextInput placeholder="Full Name" value={fullName}
+
+              <ThemedText style={styles.entryTitle}>Full Name *</ThemedText>
+              <ThemedTextInput placeholder="Enter Your Full Name" value={fullName}
                 onChangeText={setFullName} />
-              <ThemedTextInput placeholder="Username" value={username}
+              <ThemedText style={styles.entryTitle}>Username *</ThemedText>
+              <ThemedTextInput placeholder="Enter Your Username" value={username}
                 onChangeText={setUser} />
-              <ThemedTextInput placeholder="Email" value={email}
+              <ThemedText style={styles.entryTitle}>Email *</ThemedText>
+              <ThemedTextInput placeholder="Enter Your Email" value={email}
                 onChangeText={setEmail} />
-                <ThemedTextInput placeholder="Phone" value={phoneNumber}
+              <ThemedText style={styles.entryTitle}>Phone Number (optional)</ThemedText>
+              <ThemedTextInput placeholder="Phone" value={phoneNumber}
                 onChangeText={setPhoneNumber} />
-              <ThemedTextInput placeholder="Password" value={password}
-                onChangeText={setPassword} secureTextEntry/>
+              <ThemedText style={styles.entryTitle}>Password *</ThemedText>
+              <ThemedTextInput placeholder="Enter Your Password" value={password}
+                onChangeText={setPassword} secureTextEntry/> 
               <ThemedTextInput placeholder="Re-type Password" value={retypePassword}
                 onChangeText={setRetypePassword} secureTextEntry/>
+              <ThemedText style={styles.required}>*Required</ThemedText>
               
               {/* Container for buttons to center them */}
               <ThemedView style={styles.buttonContainer}>
@@ -186,6 +221,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
+  }, 
+  entryTitle: {
+    fontSize: 14, 
+    marginBottom: 5,  
+    textAlign: 'left',
+  }, 
+  required: {
+    fontSize: 12,  
+    textAlign: 'left',
+    fontStyle: 'italic',
+    marginTop: 0,
   }, 
   buttonContainer: {
     flexDirection: 'row',

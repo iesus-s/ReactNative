@@ -1,8 +1,12 @@
 import { JwtPayload as DefaultJwtPayload } from 'jwt-decode';
 
-// Define your custom interface that extends the default JwtPayload
 export interface CustomJwtPayload extends DefaultJwtPayload {
+  _id: string;
   username: string;
   email: string;
-  bio?: string; // Bio can be optional
+  bio?: string;
 }
+
+// Export an object (not recommended, but works if needed)
+const jwtPayloadExport = {} as CustomJwtPayload;
+export default jwtPayloadExport;
