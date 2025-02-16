@@ -47,6 +47,7 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="screens/home" options={{ headerShown: false }} />
             <Stack.Screen name="screens/profile" options={{ headerShown: false }} />
+            <Stack.Screen name="screens/options" options={{ headerShown: false }} />
           </Stack>
         </ThemedView>
 
