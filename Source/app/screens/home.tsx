@@ -34,7 +34,7 @@ export default function HomeScreen() {
       return;
     }
     else try {
-      const response = await fetch('http://localhost:3000/api/login/', {
+      const response = await fetch('http://192.168.1.241:3000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -84,7 +84,17 @@ export default function HomeScreen() {
     }
   
     else try {
-      const response = await fetch('http://localhost:3000/api/request/users', {
+      // Check if username is already taken
+      const response = await fetch('http://localhost:3000/api/request/users');
+      const users = await response.json();
+
+      if (users.some((user: { username: string }) => user.username === username)) {
+        setMessage('Username is already taken!');
+        toggleMessageModal();
+        return;
+      }
+
+      const createResponse = await fetch('http://localhost:3000/api/request/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,8 +108,8 @@ export default function HomeScreen() {
         }),
       });
   
-      const data = await response.json();
-      if (response.ok) {
+      const data = await createResponse.json();
+      if (createResponse.ok) {
         setMessage('New User Created!'); // Success message
         toggleCreateModal(); // Close the create account modal
       } else {

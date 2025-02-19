@@ -18,24 +18,37 @@ export default function RecordsScreen() {
       try {
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
-          const decoded = jwtDecode<CustomJwtPayload>(token); // Cast the decoded token
+          const decoded = jwtDecode<CustomJwtPayload>(token); 
           setCreatorID(decoded._id);
-
-          // Fetch scorecards created by the user
-          const response = await fetch(`http://localhost:3000/api/request/scorecards?creator=${creatorID}`);
-          const data = await response.json();
-          if (response.ok) {
-            setScorecards(data);
-          } else {
-            console.error('Failed to fetch scorecards:', data.message);
-          }
         }
       } catch (error) {
-        console.error("Error retrieving token or fetching scorecards:", error);
+        console.error("Error retrieving token:", error);
       }
     };
     fetchUserData();
   }, []);
+  
+  // Fetch scorecards **only when creatorID is available**
+  useEffect(() => {
+    const fetchScorecards = async () => {
+      if (creatorID) {
+        try { 
+          const response = await fetch(`http://192.168.1.241:3000/api/request/scorecards/user/${creatorID}`);
+          const data = await response.json();
+  
+          if (response.ok) {
+            setScorecards(data);
+          } else {
+            console.error('Failed to fetch scorecards');
+          }
+        } catch (error) {
+          console.error("Error fetching scorecards:", error);
+        }
+      }
+    };
+    fetchScorecards();
+  }, [creatorID]); // Run when creatorID is updated
+  
 
   return (
     // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
