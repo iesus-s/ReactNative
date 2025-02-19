@@ -81,7 +81,7 @@ export default function ScorecardScreen() {
           scores[player][`hole${hole}`] = 0; // Default score of 0 for each hole
         }
       })
-      const response = await fetch('http://localhost:3000/api/request/scorecards/user/create/' + creatorID, {
+      const response = await fetch('http://192.168.1.241:3000/api/request/scorecards/user/create/' + creatorID, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ course, players, holeSelection, scores, date: Date() }),

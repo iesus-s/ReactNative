@@ -12,32 +12,31 @@ export default function ProfileScreen() {
   const router = useRouter(); 
   const [scorecard, setScorecard] = useState<any>(null);
   const [creatorID, setCreatorID] = useState<string | null>(null);
-  // Fetch the scorecard data
+
   useEffect(() => {
-    const fetchScorecardData = async () => {
+    const fetchUserData = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
-          const decoded = jwtDecode<CustomJwtPayload>(token);
+          const decoded = jwtDecode<CustomJwtPayload>(token); 
           setCreatorID(decoded._id);
         }
       } catch (error) {
         console.error("Error retrieving token:", error);
       }
     };
-
-    fetchScorecardData();
-    console.log("ID:", creatorID);
+    fetchUserData();
   }, []);
 
   useEffect(() => {
     const fetchScorecard = async () => {
       if (creatorID) {
         try {
-          const response = await fetch(`http://localhost:3000/api/request/scorecards?creator=${creatorID}`);
+          const response = await fetch(`http://192.168.1.241:3000/api/request/scorecards/user/${creatorID}`);
           const data = await response.json();
-          if (data && data.length > 0) {
-            setScorecard(data[0]);  // Get the latest scorecard
+          if (response.ok) {  
+            setScorecard(data[data.length - 1]);  // Get the latest scorecard (might need fixing)
+            console.log(data[data.length - 1]);
           } else {
             console.error("No scorecard found for the given creator ID.");
           }
@@ -48,45 +47,50 @@ export default function ProfileScreen() {
     };
 
     fetchScorecard();
-  }, [creatorID]);
+  }, [creatorID]); // Run when creatorID is updated
 
   const renderGrid = () => {
     if (!scorecard) return null;
 
-    const rows = scorecard.holeSelection || 9;  // Default to 16 if not found
-    const columns = scorecard.players.length || 1;  // Default to 4 if no players
-    const columnNames = scorecard.players || ["A", "B", "C", "D"];  // Use player names from scorecard
-
+    const rows = scorecard.players.length || 1;  // Default to 1 if no players
+    const columns = (scorecard.holeSelection + 1) * 9 || 9;  // Default to 9 if not found
+    const rowNames = scorecard.players || ["A", "B", "C", "D"];  // Use player names from scorecard
     const grid = [];
 
     // Header row
     const headerRow = (
-      <ThemedView key="header" style={styles.names}>
-        {columnNames.map((name: string, index: number) => ( 
-        <ThemedText key={index} style={styles.columnHeader}>{name}</ThemedText> 
+      <ThemedView key="header" style={styles.number}>
+        {/* Empty first column for spacing */}
+        <ThemedView key="empty" style={styles.columnHeaderContainer} />
+    
+        {/* Numbered columns start from 1 */}
+        {[...Array(columns)].map((_, index) => (
+          <ThemedView key={index + 1} style={styles.columnHeaderContainer}>
+            <ThemedText style={styles.columnHeader}>{index + 1}</ThemedText> {/* Starts at 1 */}
+          </ThemedView>
         ))}
       </ThemedView>
     );
     grid.push(headerRow);
 
-    // Input rows based on holes
+    // Input columns based on players
     for (let i = 0; i < rows; i++) {
-      const row = [];
+      const column = [];
       for (let j = 0; j < columns; j++) {
-        row.push(
-          <TextInput 
-            key={`${i}-${j}`} 
-            id={`${i}-${j}`} 
-            style={styles.input} 
-            value={scorecard.scores[columnNames[j]]?.[`hole${i + 1}`] || ''}  // Set value from scorecard
+        column.push(
+          <TextInput
+            key={`${i}-${j}`}
+            id={`${i}-${j}`}
+            style={styles.input}
+            value={scorecard.scores[rowNames[i]]?.[`hole${j + 1}`] || ''}  // Set value from scorecard
           />
         );
       }
-      // Row with hole number and inputs
+      // Column with player name and inputs
       grid.push(
         <ThemedView key={i} style={styles.row}>
-          <ThemedText style={styles.rowLabel}>{i + 1}</ThemedText>
-          {row}
+          <ThemedText style={styles.rowLabel}>{rowNames[i]}</ThemedText>
+          {column}
         </ThemedView>
       );
     }
@@ -97,9 +101,13 @@ export default function ProfileScreen() {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Session Screen</ThemedText>
-        <ThemedView style={styles.gridContainer}>
-          {renderGrid()}
-        </ThemedView>
+        {/* Course Name Section */}
+        <ThemedText style={styles.sessionTitles}>Course Name: {scorecard?.course || ""}</ThemedText>
+        <ScrollView horizontal>
+          <ThemedView style={styles.gridContainer}>
+            {renderGrid()}
+          </ThemedView>
+        </ScrollView>
         <ThemedButton onPress={() => router.push("/screens/game")} style={styles.goBack} title="Go Back" />
       </ThemedView>
     </ScrollView>
@@ -108,11 +116,15 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16, 
+    flex: 1, 
+    padding: 20, 
     paddingBottom: 70,
+    paddingTop: 0,
+  },
+  sessionTitles: {
+    alignItems: 'flex-start',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   gridContainer: {
     flex: 1,
@@ -121,40 +133,42 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center', 
-    paddingLeft: 30,
-    paddingRight: 50, 
-  }, 
-  names: { 
-    flexDirection: 'row',  
     alignItems: 'center',  
-    paddingLeft: 17,
+  }, 
+  number: { 
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',   
   },
-  columnHeader: { 
-    margin: 4, 
+  columnHeaderContainer: {  
+    width: 60,   
+    color: 'white',    
+    margin: 4,  
+    justifyContent: 'center',
+    alignItems: 'center', 
+  },
+  columnHeader: {  
     fontWeight: 'bold',
-    fontSize: 20,
-    paddingLeft: 23,
-    paddingRight: 23,
+    fontSize: 24,   
+    textAlign: 'center',
   },
   rowLabel: {
     marginRight: 8,
     fontSize: 24,
-    width: 30, 
-    textAlign: 'right',
+    width: 80, 
+    textAlign: 'left', 
   },
   input: {
-    flex: 1,
+    width: 60,  
+    height: 60,  
+    textAlign: 'center',
+    fontSize: 32,
     margin: 4,
     padding: 8,
     borderWidth: 1,
-    width: 60,
-    height: 60,
     borderColor: '#ccc',
     borderRadius: 8,
     color: 'white',
-    textAlign: 'center',
-    fontSize: 32,
   },
   goBack: {
     position: 'absolute',
