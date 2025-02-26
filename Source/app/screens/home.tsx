@@ -34,7 +34,7 @@ export default function HomeScreen() {
       return;
     }
     else try {
-      const response = await fetch('http://192.168.1.241:3000/api/login/', {
+      const response = await fetch('http://192.168.5.34:3000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -56,71 +56,75 @@ export default function HomeScreen() {
   };
 
   // Create Account Logic
-  const handleCreateAccount = async () => {
-    if (!fullName) {
-      setMessage('Missing Full Name!');
-      toggleMessageModal();
-      return;
-    }
-    if (!username) {
-      setMessage('Missing Username!');
-      toggleMessageModal();
-      return;
-    }
-    if (!email) {
-      setMessage('Missing Email!');
-      toggleMessageModal();
-      return;
-    }
-    if (!password || !retypePassword) {
-      setMessage('Missing Password!');
-      toggleMessageModal();
-      return;
-    }
-    else if (password !== retypePassword) {
-      setMessage('Passwords Do Not Match!');
-      toggleMessageModal();
-      return;
-    }
-  
-    else try {
-      // Check if username is already taken
-      const response = await fetch('http://localhost:3000/api/request/users');
-      const users = await response.json();
+const handleCreateAccount = async () => {
+  if (!fullName) {
+    setMessage("Missing Full Name!");
+    toggleMessageModal();
+    return;
+  }
+  if (!username) {
+    setMessage("Missing Username!");
+    toggleMessageModal();
+    return;
+  }
+  if (!email) {
+    setMessage("Missing Email!");
+    toggleMessageModal();
+    return;
+  }
+  if (!password || !retypePassword) {
+    setMessage("Missing Password!");
+    toggleMessageModal();
+    return;
+  } else if (password !== retypePassword) {
+    setMessage("Passwords Do Not Match!");
+    toggleMessageModal();
+    return;
+  }
 
-      if (users.some((user: { username: string }) => user.username === username)) {
-        setMessage('Username is already taken!');
-        toggleMessageModal();
-        return;
-      }
+  try {
+    // Check if username is already taken
+    const response = await fetch("http://192.168.5.34:3000/api/request/users");
+    const users = await response.json();
 
-      const createResponse = await fetch('http://localhost:3000/api/request/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName,
-          username, 
-          email,
-          phoneNumber, 
-          password
-        }),
-      });
-  
-      const data = await createResponse.json();
-      if (createResponse.ok) {
-        setMessage('New User Created!'); // Success message
-        toggleCreateModal(); // Close the create account modal
-      } else {
-        setMessage(data.message); // Error message
-      }
-      toggleMessageModal(); // Show the message modal
-    } catch (error) {  
-      setMessage('Failed to Create Account. Please try again later.');
+    if (users && users.some((user: { username: string }) => user.username === username)) {
+      setMessage("Username is already taken!");
       toggleMessageModal();
+      return;
     }
-  };
+
+    const createResponse = await fetch("http://192.168.5.34:3000/api/request/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fullName,
+        username,
+        email,
+        phoneNumber,
+        password,
+      }),
+    });
+
+    const data = await createResponse.json();
+
+    if (createResponse.ok) {
+      setMessage("New User Created!"); // Success message
+      toggleCreateModal(); // Close the create account modal
+    } else {
+      // Extract error message properly
+      const errorMessage = data?.error || "Failed to create account!";
+      setMessage(errorMessage); 
+    }
+
+    toggleMessageModal(); // Show the message modal
+  } catch (error) {
+    setMessage("Failed to Create Account. Please try again later."); 
+    toggleMessageModal();
+  }
+};
+
 
   return (
     // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS

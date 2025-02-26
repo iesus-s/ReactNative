@@ -5,6 +5,7 @@ export interface CustomJwtPayload extends DefaultJwtPayload {
   username: string;
   email: string;
   bio?: string;
+  friends: string[];
 }
 
 // Export an object (not recommended, but works if needed)

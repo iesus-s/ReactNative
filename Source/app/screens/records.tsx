@@ -19,7 +19,7 @@ export default function RecordsScreen() {
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
           const decoded = jwtDecode<CustomJwtPayload>(token); 
-          setCreatorID(decoded._id);
+          setCreatorID(decoded.username);
         }
       } catch (error) {
         console.error("Error retrieving token:", error);
@@ -33,7 +33,7 @@ export default function RecordsScreen() {
     const fetchScorecards = async () => {
       if (creatorID) {
         try { 
-          const response = await fetch(`http://192.168.1.241:3000/api/request/scorecards/user/${creatorID}`);
+          const response = await fetch(`http://192.168.5.34:3000/api/request/scorecards/user/${creatorID}`);
           const data = await response.json();
   
           if (response.ok) {

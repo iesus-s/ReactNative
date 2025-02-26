@@ -32,7 +32,7 @@ export default function ProfileScreen() {
     const fetchScorecard = async () => {
       if (creatorID) {
         try {
-          const response = await fetch(`http://192.168.1.241:3000/api/request/scorecards/user/${creatorID}`);
+          const response = await fetch(`http://192.168.5.34:3000/api/request/scorecards/user/${creatorID}`);
           const data = await response.json();
           if (response.ok) {  
             setScorecard(data[data.length - 1]);  // Get the latest scorecard (might need fixing)
