@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, Image, Modal } from 'react-native';
+import { StyleSheet, ScrollView, Image, Modal, TouchableOpacity } from 'react-native';
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from "jwt-decode";
@@ -125,6 +125,8 @@ export default function ProfileScreen() {
   }, []);
 
   return (
+    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
+    // 
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Profile Screen</ThemedText>
@@ -141,7 +143,15 @@ export default function ProfileScreen() {
         <ThemedText type="profile">Friends</ThemedText>
         <ThemedButton onPress={toggleNewFriendVisible} style={styles.modalTitle} title="Add Friend" />
         <ThemedText type="body" style={styles.bio}>
-          {userData.friendUsernames.length > 0 ? userData.friendUsernames.join(", ") : "You have no friends."}
+          {userData.friendUsernames.length > 0 ? (
+            userData.friendUsernames.map((friendUsernames, index) => (
+                <TouchableOpacity key={index} style={styles.friendUsernames}>
+                  <ThemedText style={styles.friendText}>{friendUsernames}</ThemedText> 
+                </TouchableOpacity>
+              ))
+            ) : (
+              <ThemedText type="body">You have no friends.</ThemedText>
+            )}
         </ThemedText>
 
         {/* Add Friend Modal */}
@@ -211,6 +221,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     paddingHorizontal: 16
+  },
+  friendUsernames: {
+    marginVertical: 10,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    width: '90%', 
+  }, 
+  friendText: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold', 
   },
   modalTitle: {
     fontSize: 18,
