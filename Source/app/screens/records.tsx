@@ -33,7 +33,7 @@ export default function RecordsScreen() {
     const fetchScorecards = async () => {
       if (creatorID) {
         try { 
-          const response = await fetch(`http://192.168.5.34:3000/api/request/scorecards/user/${creatorID}`);
+          const response = await fetch(`http://localhost:3000/api/request/scorecards/user/${creatorID}`);
           const data = await response.json();
   
           if (response.ok) {
@@ -58,9 +58,9 @@ export default function RecordsScreen() {
         {scorecards.length > 0 ? (
           scorecards.map((scorecard, index) => (
             <TouchableOpacity key={index} style={styles.scorecard}>
-              <ThemedText type="body">Facility Name: {scorecard.course}</ThemedText>
-              <ThemedText type="body">Date: {new Date(scorecard.date).toLocaleDateString()}</ThemedText>
-              <ThemedText type="body">Players: {scorecard.players.join(', ')}</ThemedText>
+              <ThemedText style={styles.scorecardText}>Facility Name: {scorecard.course}</ThemedText>
+              <ThemedText style={styles.scorecardText}>Date: {new Date(scorecard.date).toLocaleDateString()}</ThemedText>
+              <ThemedText style={styles.scorecardText}>Players: {scorecard.players.join(', ')}</ThemedText>
             </TouchableOpacity>
           ))
         ) : (
@@ -85,5 +85,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     width: '90%',
+  },
+  scorecardText: {
+    fontWeight: 'bold',
   },
 });

@@ -34,7 +34,7 @@ export default function HomeScreen() {
       return;
     }
     else try {
-      const response = await fetch('http://192.168.5.34:3000/api/login/', {
+      const response = await fetch('http://localhost:3000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -176,6 +176,12 @@ const handleCreateAccount = async () => {
               <ThemedTextInput placeholder="Phone" value={phoneNumber}
                 onChangeText={setPhoneNumber} />
               <ThemedText style={styles.entryTitle}>Password *</ThemedText>
+              <ThemedText style={styles.requirements}>Requirements</ThemedText>
+              <ThemedText style={styles.requirements}>At least 8 characters long</ThemedText>
+              <ThemedText style={styles.requirements}>Contains 1 uppercase letter (A-Z)</ThemedText>
+              <ThemedText style={styles.requirements}>Contains 1 lowercase letter (a-z)</ThemedText>
+              <ThemedText style={styles.requirements}>Contains 1 number (0-9)</ThemedText>
+              <ThemedText style={styles.requirements}>Contains 1 special character (!@#$%^&*)</ThemedText>
               <ThemedTextInput placeholder="Enter Your Password" value={password}
                 onChangeText={setPassword} secureTextEntry/> 
               <ThemedTextInput placeholder="Re-type Password" value={retypePassword}
@@ -240,6 +246,12 @@ const styles = StyleSheet.create({
     fontSize: 14, 
     marginBottom: 5,  
     textAlign: 'left',
+  }, 
+  requirements: {
+    fontSize: 12,   
+    marginBottom: 2, 
+    textAlign: 'left',
+    fontStyle: 'italic',
   }, 
   required: {
     fontSize: 12,  

@@ -13,6 +13,7 @@ export default function ProfileScreen() {
   const [scorecard, setScorecard] = useState<any>(null);
   const [creatorID, setCreatorID] = useState<string | null>(null);
 
+  // Get the User's Authorization Token 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -28,6 +29,7 @@ export default function ProfileScreen() {
     fetchUserData();
   }, []);
 
+  // Get the Scorecard Data from User 
   useEffect(() => {
     const fetchScorecard = async () => {
       if (creatorID) {
@@ -48,6 +50,11 @@ export default function ProfileScreen() {
 
     fetchScorecard();
   }, [creatorID]); // Run when creatorID is updated
+
+  // Update Scorecard Data
+  const updateScorecard = async () => {
+    
+  };
 
   const renderGrid = () => {
     if (!scorecard) return null;
@@ -134,6 +141,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',  
+    marginRight: 37,
   }, 
   number: { 
     flexDirection: 'row',
@@ -155,7 +163,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     marginRight: 8,
     fontSize: 24,
-    width: 80, 
+    width: 100, 
     textAlign: 'left', 
   },
   input: {
