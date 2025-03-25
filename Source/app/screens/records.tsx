@@ -8,6 +8,8 @@ import { jwtDecode } from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
+const API_URL = 'http://192.168.5.34'; 
+
 export default function RecordsScreen() {
   const router = useRouter();
   const [creatorID, setCreatorID] = useState<string | null>(null);
@@ -33,7 +35,7 @@ export default function RecordsScreen() {
     const fetchScorecards = async () => {
       if (creatorID) {
         try { 
-          const response = await fetch(`http://localhost:3000/api/request/scorecards/user/${creatorID}`);
+          const response = await fetch(API_URL + `:3000/api/request/scorecards/user/${creatorID}`);
           const data = await response.json();
   
           if (response.ok) {

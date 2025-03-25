@@ -8,10 +8,21 @@ import { jwtDecode } from "jwt-decode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
+interface Scorecard {
+  _id: string;
+  date: string;
+  players: string[];
+  holeSelection: number;
+  scores: { [key: string]: { [key: string]: string } };
+}
+
+const API_URL = 'http://192.168.5.34'; 
+
 export default function ProfileScreen() {
   const router = useRouter(); 
   const [scorecard, setScorecard] = useState<any>(null);
   const [creatorID, setCreatorID] = useState<string | null>(null);
+  const [scorecardID, setScorecardID] = useState<string | null>(null);
 
   // Get the User's Authorization Token 
   useEffect(() => {
@@ -34,13 +45,23 @@ export default function ProfileScreen() {
     const fetchScorecard = async () => {
       if (creatorID) {
         try {
-          const response = await fetch(`http://192.168.5.34:3000/api/request/scorecards/user/${creatorID}`);
-          const data = await response.json();
-          if (response.ok) {  
-            setScorecard(data[data.length - 1]);  // Get the latest scorecard (might need fixing)
-            console.log(data[data.length - 1]);
+          const response = await fetch(`${API_URL}:3000/api/request/scorecards/user/${creatorID}`);
+          const data = await response.json(); 
+          console.log("DATA: ", data);  // Log the data for debugging
+
+          if (response.ok) {
+            if (data) {
+              // Find latest Scorecard by Date
+                const latestScorecard: Scorecard = data.Scorecards.sort((a: Scorecard, b: Scorecard) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+                setScorecard(latestScorecard);
+                setScorecardID(latestScorecard._id); // Set the scorecard ID
+              console.log("Scorecard data: ", latestScorecard);  // Log the scorecard data for debugging
+              console.log("Scorecard ID: ", latestScorecard._id);  // Log the scorecard ID for debugging
+            } else {
+              console.error("No scorecard found for the given creator ID.");
+            }
           } else {
-            console.error("No scorecard found for the given creator ID.");
+            console.error("Error fetching scorecard data.");
           }
         } catch (error) {
           console.error("Error fetching scorecard data:", error);
@@ -51,16 +72,51 @@ export default function ProfileScreen() {
     fetchScorecard();
   }, [creatorID]); // Run when creatorID is updated
 
-  // Update Scorecard Data
-  const updateScorecard = async () => {
-    
+  // Handle input change for scores
+  const handleInputChange = (player: string, hole: number, value: string) => {
+    if (scorecard) {
+      const updatedScores = { ...scorecard.scores };
+      if (!updatedScores[player]) {
+        updatedScores[player] = {};
+      }
+      updatedScores[player][`hole${hole}`] = value;
+
+      setScorecard({
+        ...scorecard,
+        scores: updatedScores,
+      });
+    }
   };
+
+  // Update Scorecard Data
+  useEffect(() => {
+    const updateScorecard = async () => { 
+      if (scorecard) {
+        try {
+          const response = await fetch(`${API_URL}:3000/api/request/scorecards/user/update/${scorecardID}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(scorecard),
+          });
+          if (response.ok) {
+            console.log("Scorecard updated successfully.");
+          } else {
+            console.error("Error updating scorecard.");
+            console.log("Updated Scorecard: ", scorecard);
+          }
+        } catch (error) {
+          console.error("Error updating scorecard:", error);
+        }
+      }
+    };
+    updateScorecard();
+  }, [scorecard]); // Run when scorecard is updated
 
   const renderGrid = () => {
     if (!scorecard) return null;
 
     const rows = scorecard.players.length || 1;  // Default to 1 if no players
-    const columns = (scorecard.holeSelection + 1) * 9 || 9;  // Default to 9 if not found
+    const columns = (scorecard.holeSelection) || 9;  // Default to 9 if not found 
     const rowNames = scorecard.players || ["A", "B", "C", "D"];  // Use player names from scorecard
     const grid = [];
 
@@ -90,6 +146,8 @@ export default function ProfileScreen() {
             id={`${i}-${j}`}
             style={styles.input}
             value={scorecard.scores[rowNames[i]]?.[`hole${j + 1}`] || ''}  // Set value from scorecard
+            onChangeText={(text) => handleInputChange(rowNames[i], j + 1, text)} // Handle input change
+            keyboardType="numeric"  // Ensure numeric input
           />
         );
       }

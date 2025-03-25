@@ -4,7 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedButton } from '../components/ThemedButton';
-import { ThemedTextInput } from '../components/ThemedTextInput';    
+import { ThemedTextInput } from '../components/ThemedTextInput';     
+
+const API_URL = 'http://192.168.5.34'; 
 
 export default function HomeScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -34,7 +36,7 @@ export default function HomeScreen() {
       return;
     }
     else try {
-      const response = await fetch('http://localhost:3000/api/login/', {
+      const response = await fetch(API_URL + ':3000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -84,7 +86,7 @@ const handleCreateAccount = async () => {
 
   try {
     // Check if username is already taken
-    const response = await fetch("http://192.168.5.34:3000/api/request/users");
+    const response = await fetch(API_URL + ":3000/api/request/users");
     const users = await response.json();
 
     if (users && users.some((user: { username: string }) => user.username === username)) {
@@ -93,7 +95,7 @@ const handleCreateAccount = async () => {
       return;
     }
 
-    const createResponse = await fetch("http://192.168.5.34:3000/api/request/users", {
+    const createResponse = await fetch(API_URL + ":3000/api/request/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
