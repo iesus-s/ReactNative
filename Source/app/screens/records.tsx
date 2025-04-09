@@ -8,6 +8,8 @@ import { jwtDecode } from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
+const API_URL = 'http://192.168.5.34'; 
+
 export default function RecordsScreen() {
   const router = useRouter();
   const [creatorID, setCreatorID] = useState<string | null>(null);
@@ -28,16 +30,16 @@ export default function RecordsScreen() {
     fetchUserData();
   }, []);
   
-  // Fetch scorecards **only when creatorID is available**
   useEffect(() => {
     const fetchScorecards = async () => {
       if (creatorID) {
         try { 
-          const response = await fetch(`http://localhost:3000/api/request/scorecards/user/${creatorID}`);
+          const response = await fetch(`${API_URL}:3000/api/request/scorecards/user/${creatorID}`);
           const data = await response.json();
   
           if (response.ok) {
-            setScorecards(data);
+            setScorecards(data.Scorecards); 
+            console.log("Scorecards data: ", data.Scorecards);  // Log the scorecards data for debugging
           } else {
             console.error('Failed to fetch scorecards');
           }
@@ -47,20 +49,22 @@ export default function RecordsScreen() {
       }
     };
     fetchScorecards();
-  }, [creatorID]); // Run when creatorID is updated
+  }, [creatorID]);
   
-
   return (
-    // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Records Screen</ThemedText>
         {scorecards.length > 0 ? (
-          scorecards.map((scorecard, index) => (
-            <TouchableOpacity key={index} style={styles.scorecard}>
+          scorecards.map((scorecard) => (
+            <TouchableOpacity 
+              key={scorecard._id} 
+              style={styles.scorecard} 
+              onPress={() => router.push({ pathname: "/screens/picked_session", params: { scorecardID: scorecard._id } })}
+            >
               <ThemedText style={styles.scorecardText}>Facility Name: {scorecard.course}</ThemedText>
-              <ThemedText style={styles.scorecardText}>Date: {new Date(scorecard.date).toLocaleDateString()}</ThemedText>
               <ThemedText style={styles.scorecardText}>Players: {scorecard.players.join(', ')}</ThemedText>
+              <ThemedText style={styles.scorecardText}>Date: {new Date(scorecard.date).toLocaleDateString()}</ThemedText>
             </TouchableOpacity>
           ))
         ) : (

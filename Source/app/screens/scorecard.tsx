@@ -9,6 +9,8 @@ import { jwtDecode } from "jwt-decode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
+const API_URL = 'http://192.168.5.34'; 
+
 export default function ScorecardScreen() {
   const router = useRouter();
 
@@ -19,7 +21,7 @@ export default function ScorecardScreen() {
   const [creatorID, setCreatorID] = useState<string | null>(null);
  
   const [course, setFacility] = useState('');
-  const [holeSelection, setSelected] = useState<number>(0); // Track the selected circle
+  const [holeSelected, setSelected] = useState<number>(0); // Track the selected circle
 
   const options = ['9 hole', '18 hole', '27 hole', '36 hole'];
   // Needs handleHole logic
@@ -77,25 +79,25 @@ export default function ScorecardScreen() {
       players.forEach(player => {
         scores[player] = {};
         // For each player, create hole scores
-        for (let hole = 1; hole <= (holeSelection+1) * 9; hole++) {
+        for (let hole = 1; hole <= (holeSelected+1) * 9; hole++) {
           scores[player][`hole${hole}`] = 0; // Default score of 0 for each hole
         }
       })
-      const response = await fetch('http://192.168.5.34:3000/api/request/scorecards/user/create/' + creatorID, {
+      let holeSelection = (holeSelected+1) * 9; // Adjust for 0-based index
+      const response = await fetch(API_URL + ':3000/api/request/scorecards/user/create/' + creatorID, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ course, players, holeSelection, scores, date: Date() }),
+        body: JSON.stringify({ course, players, holeSelection, scores, creatorID, date: Date() }), // Include creatorID in the request body
       });
         const data = await response.json();
         if (response.ok) {
           // Handle success response
           setMessage('Game created successfully!');
           toggleMessageModal();
-          router.push("/screens/session");
-
+          router.push("/screens/session"); 
         } 
         else {
-          setMessage(`Failed to create game: ${data.message || 'Unknown error'}`);
+          setMessage(`Failed to create game: ${data.message || 'Unknown error'}`); 
           toggleMessageModal(); 
         }
       } 
@@ -121,7 +123,7 @@ export default function ScorecardScreen() {
         <ThemedView style={styles.grid}>
           {options.map((option, index) => (
             <ThemedView key={index} style={styles.itemContainer}>
-              <TouchableOpacity style={[styles.circle, holeSelection === index && styles.selected]}
+              <TouchableOpacity style={[styles.circle, holeSelected === index && styles.selected]}
                 onPress={() => handleHole(index)}/>
               <ThemedText type="body">{option}</ThemedText>
             </ThemedView>
