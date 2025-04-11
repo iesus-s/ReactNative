@@ -8,13 +8,18 @@ import { jwtDecode } from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
-const API_URL = 'http://192.168.5.34'; 
+// API URL
+const API_URL = 'http://192.168.1.241'; 
 
 export default function RecordsScreen() {
+  // Initialize the router (for navigation) used to naviate between screens
   const router = useRouter();
+  // Signed In User State variables
   const [creatorID, setCreatorID] = useState<string | null>(null);
   const [scorecards, setScorecards] = useState<any[]>([]);
 
+  // Get the Signed In User ID from AsyncStorage
+  // and fetch the scorecards from the API
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -30,6 +35,7 @@ export default function RecordsScreen() {
     fetchUserData();
   }, []);
   
+  // Fetch the scorecards from the API using the creatorID
   useEffect(() => {
     const fetchScorecards = async () => {
       if (creatorID) {
@@ -54,7 +60,9 @@ export default function RecordsScreen() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
+        {/* Title of the Screen */}
         <ThemedText type="title">Records Screen</ThemedText>
+        {/* Populate Scorecards */}
         {scorecards.length > 0 ? (
           scorecards.map((scorecard) => (
             <TouchableOpacity 
@@ -70,12 +78,14 @@ export default function RecordsScreen() {
         ) : (
           <ThemedText type="body">No scorecards found.</ThemedText>
         )}
+        {/* Button to go back a Screen */}
         <ThemedButton onPress={router.back} title="Go Back" />
       </ThemedView>
     </ScrollView>
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

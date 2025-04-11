@@ -9,7 +9,11 @@ import { CustomJwtPayload } from '../constants/jwtPayload';
 import { ThemedButton } from '../components/ThemedButton';
 import { ThemedTextInput } from '../components/ThemedTextInput';
 
+// API URL
+const API_URL = 'http://192.168.1.241'; 
+
 export default function ProfileScreen() {
+  // Initialize the router (for navigation) used to naviate between screens
   const router = useRouter();
 
   {/* Add Friend Modal Constants */ }
@@ -32,7 +36,7 @@ export default function ProfileScreen() {
 
     try {
       // Fetch the friend's details by username
-      const response = await fetch(`http://192.168.5.34:3000/api/request/users/${addFriend}`);
+      const response = await fetch(API_URL + `:3000/api/request/users/${addFriend}`);
 
       if (!response.ok) throw new Error("User Not Found!");
 
@@ -46,7 +50,7 @@ export default function ProfileScreen() {
       const currentUserId = decoded._id; // Get token's ID
 
       // Fetch the current user's friend list
-      const userResponse = await fetch(`http://192.168.5.34:3000/api/request/users/${currentUserId}`);
+      const userResponse = await fetch(API_URL + `:3000/api/request/users/${currentUserId}`);
       if (!userResponse.ok) throw new Error("Failed to fetch user data!");
 
       const userData = await userResponse.json();
@@ -55,7 +59,7 @@ export default function ProfileScreen() {
       const updatedFriends = Array.isArray(userData.friends) ? [...userData.friends, friendData._id] : [friendData._id];
 
       // Update the current user's friends array
-      const addFriendResponse = await fetch(`http://192.168.5.34:3000/api/request/users/${currentUserId}`, {
+      const addFriendResponse = await fetch(API_URL + `:3000/api/request/users/${currentUserId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -87,6 +91,7 @@ export default function ProfileScreen() {
     friendUsernames: [] as string[], // Store friend usernames
   });
 
+  // Fetch the current user's data when the component mounts
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -96,13 +101,13 @@ export default function ProfileScreen() {
           const currentUserId = decoded._id;
 
           // Fetch user data
-          const response = await fetch(`http://192.168.5.34:3000/api/request/users/${currentUserId}`);
+          const response = await fetch(API_URL + `:3000/api/request/users/${currentUserId}`);
           const userData = await response.json();
 
           // Fetch usernames for all friends
           const friendUsernames = await Promise.all(
             userData.friends.map(async (friendId: string) => {
-              const friendResponse = await fetch(`http://192.168.5.34:3000/api/request/users/${friendId}`);
+              const friendResponse = await fetch(API_URL + `:3000/api/request/users/${friendId}`);
               const friendData = await friendResponse.json();
               return friendData.username; // Convert Friend ID's to their appropriate usernames
             })
@@ -129,18 +134,22 @@ export default function ProfileScreen() {
     // 
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
+        {/* Title of the Screen */}
         <ThemedText type="title">Profile Screen</ThemedText>
+        {/* User Profile Image */}
         <ThemedView style={styles.avatarContainer}>
           <Image
             source={require('../assets/images/profile.png')}
             style={styles.avatar}
           />
         </ThemedView>
+        {/* User Profile Data */}
         <ThemedText type="title" style={styles.name}>{userData.username}</ThemedText>
         <ThemedText type="body" style={styles.email}>{userData.email}</ThemedText>
         <ThemedText type="body" style={styles.bio}>{userData.bio}</ThemedText>
         <ThemedView style={styles.divider} />
         <ThemedText type="profile">Friends</ThemedText>
+        {/* Add Friend's Button */}
         <ThemedButton onPress={toggleNewFriendVisible} style={styles.modalTitle} title="Add Friend" />
         <ThemedText type="body" style={styles.bio}>
           {userData.friendUsernames.length > 0 ? (
@@ -190,6 +199,7 @@ export default function ProfileScreen() {
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

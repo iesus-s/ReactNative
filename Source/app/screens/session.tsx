@@ -8,6 +8,8 @@ import { jwtDecode } from "jwt-decode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
+// Define the Scorecard interface tthat is fetched from the API
+// This interface defines the structure of the scorecard data
 interface Scorecard {
   _id: string;
   date: string;
@@ -16,10 +18,13 @@ interface Scorecard {
   scores: { [key: string]: { [key: string]: string } };
 }
 
-const API_URL = 'http://192.168.5.34'; 
+// API URL
+const API_URL = 'http://192.168.1.241'; 
 
 export default function ProfileScreen() {
+  // Initialize the router (for navigation) used to naviate between screens
   const router = useRouter(); 
+  // Scorecard Parameters
   const [scorecard, setScorecard] = useState<any>(null);
   const [creatorID, setCreatorID] = useState<string | null>(null);
   const [scorecardID, setScorecardID] = useState<string | null>(null);
@@ -75,18 +80,23 @@ export default function ProfileScreen() {
   // Handle input change for scores
   const handleInputChange = (player: string, hole: number, value: string) => {
     if (scorecard) {
-      const updatedScores = { ...scorecard.scores };
-      if (!updatedScores[player]) {
-        updatedScores[player] = {};
-      }
-      updatedScores[player][`hole${hole}`] = value;
-
+      // Ensure we maintain the expected array structure
+      const updatedScores = scorecard.scores.map((scoreEntry: any) => {
+        if (scoreEntry.player === player) {
+          return {
+            ...scoreEntry,
+            [`hole${hole}`]: value, // Update the specific hole value
+          };
+        }
+        return scoreEntry;
+      });
+  
       setScorecard({
         ...scorecard,
         scores: updatedScores,
       });
     }
-  };
+  };  
 
   // Update Scorecard Data
   useEffect(() => {
@@ -179,6 +189,7 @@ export default function ProfileScreen() {
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1, 

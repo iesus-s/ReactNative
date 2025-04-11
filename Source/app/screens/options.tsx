@@ -5,26 +5,29 @@ import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText'
 
 export default function OptionsScreen() {
+  // Initialize the router (for navigation) used to naviate between screens
   const router = useRouter(); 
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
+        {/* Title of the Screen */}
         <ThemedText type="title">Options</ThemedText>
+        {/* Options Reroute to Appropriate Page */}
         <ThemedView style={styles.listContainer}> 
-            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options/profile_settings')}> 
+            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options_screens/profile_settings')}> 
               <ThemedText style={styles.optionTitle}>Profile Settings</ThemedText>
             </TouchableOpacity> 
-            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options/notifications')}> 
+            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options_screens/notifications')}> 
               <ThemedText style={styles.optionTitle}>Notifications</ThemedText>
             </TouchableOpacity> 
-            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options/privacy')}> 
+            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options_screens/privacy')}> 
               <ThemedText style={styles.optionTitle}>Privacy & Security</ThemedText>
             </TouchableOpacity> 
-            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options/appearance')}> 
+            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options_screens/appearance')}> 
               <ThemedText style={styles.optionTitle}>Appearance</ThemedText>
             </TouchableOpacity> 
-            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options/about')}> 
+            <TouchableOpacity style={styles.optionItem} onPress={() => router.push('/options_screens/about')}> 
               <ThemedText style={styles.optionTitle}>About</ThemedText>
             </TouchableOpacity> 
         </ThemedView>
@@ -33,6 +36,7 @@ export default function OptionsScreen() {
   );
 }
 
+//Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
