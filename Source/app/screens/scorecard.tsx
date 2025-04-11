@@ -9,9 +9,11 @@ import { jwtDecode } from "jwt-decode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CustomJwtPayload } from '../constants/jwtPayload';
 
-const API_URL = 'http://192.168.5.34'; 
+// API URL
+const API_URL = 'http://192.168.1.241'; 
 
 export default function ScorecardScreen() {
+  // Initialize the router (for navigation) used to naviate between screens
   const router = useRouter();
 
   // Error Modal
@@ -23,15 +25,19 @@ export default function ScorecardScreen() {
   const [course, setFacility] = useState('');
   const [holeSelected, setSelected] = useState<number>(0); // Track the selected circle
 
+  // Hole Selection Options
   const options = ['9 hole', '18 hole', '27 hole', '36 hole'];
+
   // Needs handleHole logic
   const handleHole = (index: number) => {
     setSelected(index);
   }; 
-  
+   
+  // Initialize the team members state
   const [players, setTeamMembers] = useState<string[]>(["Guest"]); 
-
   const [newMember, setNewMember] = useState('');
+
+  // Handle input change for new member
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -143,6 +149,7 @@ export default function ScorecardScreen() {
           ))}
         </ThemedView>
 
+        {/* Add Member Section */}
         <ThemedView style={styles.addMemberContainer}>
           <ThemedTextInput placeholder="Add new member"
             value={newMember} onChangeText={setNewMember}/> 
@@ -169,6 +176,7 @@ export default function ScorecardScreen() {
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1, 

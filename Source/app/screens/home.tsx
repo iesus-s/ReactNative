@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Modal, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedView } from '../components/ThemedView';
@@ -6,24 +7,50 @@ import { ThemedText } from '../components/ThemedText';
 import { ThemedButton } from '../components/ThemedButton';
 import { ThemedTextInput } from '../components/ThemedTextInput';     
 
-const API_URL = 'http://192.168.5.34'; 
+// API URL
+const API_URL = 'http://192.168.1.241'; 
 
 export default function HomeScreen() {
+  // Initialize the router (for navigation) used to naviate between screens
+  const router = useRouter();
+  // State variables for modals and form inputs
+  // Handles Sign in Modal State
   const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => setModalVisible(!isModalVisible);
+  // Handles Create Account Modal State
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
+  const toggleCreateModal = () => setCreateModalVisible(!isCreateModalVisible);
+  // User Inputs for Sign In and Create Account
   const [fullName, setFullName]= useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUser] = useState(''); 
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
+  // Handles Success/Error Message Modal State
   const [isMessageModalVisible, setMessageModalVisible] = useState(false);
-  const [message, setMessage] = useState('');   
-
-  const toggleModal = () => setModalVisible(!isModalVisible);
-  const toggleCreateModal = () => setCreateModalVisible(!isCreateModalVisible);
   const toggleMessageModal = () => setMessageModalVisible(!isMessageModalVisible);
+  const [message, setMessage] = useState('');     
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkSignInStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) { 
+          // User is signed in, navigate to Log Out Screen (home_logged.tsx)
+          router.push("/screens/home_logged"); 
+        }
+      } catch (error) {
+        // Handle error if needed
+        console.error('Error checking sign-in status:', error);
+      }
+    };
+    // Call the function to check sign-in status
+    checkSignInStatus();  
+  }, []);
+
+  // Sign In Logic
   const handleSignIn = async () => {
     if (!username) {
       setMessage('Missing Username!');
@@ -132,8 +159,10 @@ const handleCreateAccount = async () => {
     // PLACE SCROLLVIEW AND THEMEDVIEW CONTAINER BY DEFAULT IN ALL SCREENS
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
+        {/* Title of the Screen */}
         <ThemedText type="title">Home Screen</ThemedText>  
         <ThemedView style={styles.buttonsContainer}>
+          {/* Sign In and Create Account Buttons */}
           <ThemedButton onPress={toggleModal} title="Sign In" /> 
           <ThemedButton onPress={toggleCreateModal} title="Create Account" /> 
         </ThemedView>
@@ -149,7 +178,7 @@ const handleCreateAccount = async () => {
               <ThemedTextInput placeholder="Password" value={password}
                 onChangeText={setPassword} secureTextEntry/>
               
-              {/* Container for buttons to center them */}
+              {/* Submit Sign In or Cancel Buttons for Modal*/}
               <ThemedView style={styles.buttonContainer}>
                 <ThemedButton onPress={handleSignIn} title="Submit" />
                 <ThemedButton onPress={toggleModal} title="Cancel" />
@@ -163,8 +192,9 @@ const handleCreateAccount = async () => {
                 onRequestClose={toggleCreateModal}>
           <ThemedView style={styles.modalOverlay}>
             <ThemedView style={styles.modalContainer}>
+              {/* Create Account Modal Title */}
               <ThemedText type="request" style={styles.modalTitle}>Create Account</ThemedText>
-
+              {/* Create Account Form Options */}
               <ThemedText style={styles.entryTitle}>Full Name *</ThemedText>
               <ThemedTextInput placeholder="Enter Your Full Name" value={fullName}
                 onChangeText={setFullName} />
@@ -190,7 +220,7 @@ const handleCreateAccount = async () => {
                 onChangeText={setRetypePassword} secureTextEntry/>
               <ThemedText style={styles.required}>*Required</ThemedText>
               
-              {/* Container for buttons to center them */}
+              {/* Submit Create Account or Cancel Buttons for Modal*/}
               <ThemedView style={styles.buttonContainer}>
                 <ThemedButton onPress={handleCreateAccount} title="Submit" />
                 <ThemedButton onPress={toggleCreateModal} title="Cancel" />
@@ -216,6 +246,7 @@ const handleCreateAccount = async () => {
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1, 

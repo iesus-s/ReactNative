@@ -14,8 +14,11 @@ import { ThemedText } from "./components/ThemedText";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const router = useRouter(); // Initialize router
+  // Initialize the router (for navigation) used to naviate between screens
+  const router = useRouter();  
+  // Get the color scheme from the device
   const colorScheme = useRNColorScheme();
+  // Load custom fonts
   const [loaded] = useFonts({
     SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -79,6 +82,7 @@ export default function RootLayout() {
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -5,6 +5,8 @@ import { ThemedView } from '../components/ThemedView';
 import { ThemedText } from '../components/ThemedText'; 
 import { ThemedButton } from '../components/ThemedButton';
 
+// Define the Scorecard interface tthat is fetched from the API
+// This interface defines the structure of the scorecard data
 interface Scorecard {
   _id: string;
   date: string;
@@ -14,10 +16,13 @@ interface Scorecard {
   course?: string;  
 }
 
-const API_URL = 'http://192.168.5.34'; 
+// API URL
+const API_URL = 'http://192.168.1.241'; 
 
 export default function PickedSession() {
+  // Initialize the router (for navigation) used to naviate between screens
   const router = useRouter(); 
+  // Scorecard Parameters
   const { scorecardID } = useLocalSearchParams();
   const [scorecard, setScorecard] = useState<Scorecard | null>(null);
 
@@ -82,6 +87,8 @@ export default function PickedSession() {
       updateScorecard();
     }, [scorecard]); // Run when scorecard is updated
 
+  // Render the scorecard grid
+  // This function creates the grid of inputs for the scorecard
   const renderGrid = () => {
     if (!scorecard) return null;
 
@@ -130,17 +137,20 @@ export default function PickedSession() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemedView style={styles.container}>
+        {/* Title of the Screen */}
         <ThemedText type="title">Session Screen</ThemedText>
         <ThemedText style={styles.sessionTitles}>Course Name: {scorecard?.course || ""}</ThemedText>
         <ScrollView horizontal>
           <ThemedView style={styles.gridContainer}>{renderGrid()}</ThemedView>
         </ScrollView>
+        {/* Button to go back a Screen */}
         <ThemedButton onPress={() => router.back()} style={styles.goBack} title="Go Back" />
       </ThemedView>
     </ScrollView>
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
